@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+        <record id="module_category_microbank" model="ir.module.category">
+            <field name="name">Microbank</field>
+        </record>
+    </data>
+
+    <record id="group_privilege_prestamos" model="res.groups.privilege">
+        <field name="name">Prestamos</field>
+        <field name="category_id" ref="module_category_microbank"/>
+        <field name="sequence">10</field>
+    </record>
+
+    <record id="group_manager" model="res.groups">
+        <field name="name">Gerente</field>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        <field name="privilege_id" ref="group_privilege_prestamos"/>
+    </record>
+
+    <record id="group_analyst" model="res.groups">
+        <field name="name">Analista</field>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        <field name="privilege_id" ref="group_privilege_prestamos"/>
+    </record>
+
+    <record id="group_cashier" model="res.groups">
+        <field name="name">Cajero</field>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        <field name="privilege_id" ref="group_privilege_prestamos"/>
+    </record>
+
+    <record id="loan_rule_analista" model="ir.rule">
+        <field name="name">Analista: solo ven sus prestamos</field>
+        <field name="model_id" ref="model_loan_application"/>
+        <field name="groups" eval="[(4, ref('microbank.group_analyst'))]"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+    </record>
+
+    <record id="loan_rule_manager" model="ir.rule">
+        <field name="name">Gerente: puede ver todos los prestamos</field>
+        <field name="model_id" ref="model_loan_application"/>
+        <field name="groups" eval="[(4, ref('microbank.group_manager'))]"/>
+        <field name="domain_force">[]</field>
+    </record>
+
+    <record id="loan_rule_cajero" model="ir.rule">
+        <field name="name">Cajero: solo ve prestamos aprobados</field>
+        <field name="model_id" ref="model_loan_application"/>
+        <field name="groups" eval="[(4, ref('microbank.group_cashier'))]"/>
+        <field name="domain_force">[('state','=','aprobado')]</field>
+    </record>
+</odoo>

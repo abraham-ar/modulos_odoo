@@ -1,0 +1,7 @@
+id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
+access_loan_application_analyst,access.loan.application.analyst,model_loan_application,microbank.group_analyst,1,1,1,0
+access_loan_application_manager,access.loan.application.manager,model_loan_application,microbank.group_manager,1,1,0,0
+access_loan_application_cashier,access.loan.application.cashier,model_loan_application,microbank.group_cashier,1,0,0,0
+access_loan_payment_analyst,access.loan.payment.analyst,model_loan_payment,microbank.group_analyst,1,0,0,0
+access_loan_payment_manager,access.loan.payment.manager,model_loan_payment,microbank.group_manager,1,0,0,0
+access_loan_payment_cashier,access.loan.payment.cashier,model_loan_payment,microbank.group_cashier,1,1,1,0
