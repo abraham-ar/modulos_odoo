@@ -6,6 +6,14 @@
          <field name="group_ids" eval="[(4, ref('microbank.group_analyst'))]"/>
         <field name="arch" type="xml">
             <form string="Prestamo">
+                <header>
+                    <button name="action_aprobar" type="object" string="Aprobar" invisible="state != 'borrador'"
+                            class="oe_highlight"/>
+                    <button name="action_pagar" type="object" string="Marcar como pagado" invisible="state != 'aprobado'"
+                            class="oe_highlight"/>
+                    <button name="action_rechazar" type="object" string="Rechazar" invisible="state != 'borrador'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="borrador,aprobado,pagado"/>
+                </header>
                 <sheet>
                     <group>
                         <group>
@@ -16,13 +24,10 @@
                             <field name="term_months"/>
                         </group>
                         <group>
-                            <field name="state"/>
                             <field name="monthly_payment" readonly="True"/>
                             <field name="total_to_pay" readonly="True"/>
                             <field name="approval_date"/>
                             <field name="next_payment_date"/>
-                        </group>
-                        <group>
                             <field name="progress" widget="percentpie"/>
                         </group>
                     </group>

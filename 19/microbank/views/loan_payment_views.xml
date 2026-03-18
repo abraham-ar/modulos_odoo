@@ -6,6 +6,12 @@
         <field name="group_ids" eval="[(4, ref('microbank.group_cashier'))]"/>
         <field name="arch" type="xml">
             <form string="Pago">
+                <header>
+                    <button name="action_confirmar" type="object" string="Confirmar" invisible="state != 'borrador'"
+                            class="oe_highlight"/>
+                    <button name="action_cancelar" type="object" string="Cancelar" invisible="state != 'borrador'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="borrador,confirmado"/>
+                </header>
                 <sheet>
                     <group>
                         <group>

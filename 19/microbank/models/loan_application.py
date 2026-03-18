@@ -99,3 +99,15 @@ class LoanApplication(models.Model):
             else:
                 progress = sum_payment * 100 / rec.total_to_pay
                 rec.progress = progress
+
+    def action_aprobar(self):
+        for rec in self:
+            rec.state = 'aprobado'
+
+    def action_pagar(self):
+        for rec in self:
+            rec.state = 'pagado'
+
+    def action_rechazar(self):
+        for rec in self:
+            rec.state = 'rechazado'

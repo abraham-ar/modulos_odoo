@@ -17,5 +17,14 @@ class LoanPayment(models.Model):
     state = fields.Selection(
         string='Estado del pago',
         selection=[('borrador','Borrador'), ('confirmado', 'Confirmado'),
-                   ('cancelado', 'Cancelado')]
+                   ('cancelado', 'Cancelado')],
+        default='borrador'
     )
+
+    def action_confirmar(self):
+        for rec in self:
+            rec.state = 'confirmado'
+
+    def action_cancelar(self):
+        for rec in self:
+            rec.state = 'cancelado'
