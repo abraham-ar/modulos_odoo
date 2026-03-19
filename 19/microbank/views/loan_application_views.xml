@@ -3,13 +3,14 @@
     <record id="view_microbank_loan_application_form" model="ir.ui.view">
         <field name="name">microbank.loan.application.form</field>
         <field name="model">loan.application</field>
-         <field name="group_ids" eval="[(4, ref('microbank.group_analyst'))]"/>
+        <field name="group_ids" eval="[(4, ref('microbank.group_analyst'))]"/>
         <field name="arch" type="xml">
             <form string="Prestamo">
                 <header>
                     <button name="action_aprobar" type="object" string="Aprobar" invisible="state != 'borrador'"
                             class="oe_highlight"/>
-                    <button name="action_pagar" type="object" string="Marcar como pagado" invisible="state != 'aprobado'"
+                    <button name="action_pagar" type="object" string="Marcar como pagado"
+                            invisible="state != 'aprobado'"
                             class="oe_highlight"/>
                     <button name="action_rechazar" type="object" string="Rechazar" invisible="state != 'borrador'"/>
                     <field name="state" widget="statusbar" statusbar_visible="borrador,aprobado,pagado"/>
@@ -57,6 +58,49 @@
                 <field name="approval_date" optional="show"/>
                 <field name="next_payment_date" optional="show"/>
             </list>
+        </field>
+    </record>
+
+    <record id="view_microbank_loan_application_kanban" model="ir.ui.view">
+        <field name="name">microbank.loan.application.kanban</field>
+        <field name="model">loan.application</field>
+        <field name="group_ids" eval="[
+        (4, ref('microbank.group_analyst'))
+        ]"/>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="state"/>
+                <field name="progress"/>
+                <templates>
+                    <t t-name="card">
+                        <div>
+                            <strong>
+                                <field name="name"/>
+                            </strong>
+                        </div>
+                        <div>
+                            <strong>
+                                Cliente:
+                            </strong>
+                            <field name="partner_id"/>
+                        </div>
+                        <div>
+                            <strong>
+                                Estado:
+                            </strong>
+                            <field name="state"/>
+                        </div>
+                        <div>
+                            <strong>
+                                Progreso de pago:
+                            </strong>
+                            <field name="progress" widget="progressbar"/>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
         </field>
     </record>
 
