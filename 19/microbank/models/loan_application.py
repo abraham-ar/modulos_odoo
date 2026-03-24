@@ -6,6 +6,7 @@ class LoanApplication(models.Model):
 
     _name = 'loan.application'
     _description = 'Solicitud de prestamo'
+    _rec_name = 'name'
 
     name = fields.Char(
         string='Numero de solicitud',

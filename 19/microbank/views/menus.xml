@@ -9,7 +9,7 @@
               name="Prestamos"
               parent="menu_microbank_root"
               action="action_microbank_loan_application"
-              groups="microbank.group_analyst,microbank.group_manager,microbank.group_cashier"
+              groups="microbank.group_analyst,microbank.group_manager,microbank.group_cashier,microbank.group_admin"
     />
 
 
@@ -17,18 +17,19 @@
               name="Clientes"
               parent="menu_microbank_root"
               action="action_microbank_client"
+              groups="microbank.group_admin"
     />
 
     <menuitem id="menu_pagos"
               name="Pagos"
               parent="menu_microbank_root"
               action="action_microbank_loan_payment"
-              groups="microbank.group_cashier"
+              groups="microbank.group_cashier,microbank.group_admin"
     />
 
     <menuitem id="menu_reportes"
               name="Reportes"
               parent="menu_microbank_root"
-              groups="microbank.group_analyst"
+              groups="microbank.group_analyst,microbank.group_admin"
     />
 </odoo>

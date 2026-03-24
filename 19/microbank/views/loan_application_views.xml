@@ -3,7 +3,10 @@
     <record id="view_microbank_loan_application_form" model="ir.ui.view">
         <field name="name">microbank.loan.application.form</field>
         <field name="model">loan.application</field>
-        <field name="group_ids" eval="[(4, ref('microbank.group_analyst'))]"/>
+        <field name="group_ids" eval="[
+            (4, ref('microbank.group_analyst')),
+            (4, ref('microbank.group_admin'))
+            ]"/>
         <field name="arch" type="xml">
             <form string="Prestamo">
                 <header>
@@ -41,9 +44,10 @@
         <field name="name">microbank.loan.application.tree</field>
         <field name="model">loan.application</field>
         <field name="group_ids" eval="[
-        (4, ref('microbank.group_analyst')),
-        (4, ref('microbank.group_manager')),
-         (4, ref('microbank.group_cashier'))
+            (4, ref('microbank.group_analyst')),
+            (4, ref('microbank.group_manager')),
+            (4, ref('microbank.group_cashier')),
+            (4, ref('microbank.group_admin'))
         ]"/>
         <field name="arch" type="xml">
             <list string="Prestamos">
@@ -65,7 +69,8 @@
         <field name="name">microbank.loan.application.kanban</field>
         <field name="model">loan.application</field>
         <field name="group_ids" eval="[
-        (4, ref('microbank.group_analyst'))
+            (4, ref('microbank.group_analyst')),
+            (4, ref('microbank.group_admin'))
         ]"/>
         <field name="arch" type="xml">
             <kanban>
@@ -104,14 +109,47 @@
         </field>
     </record>
 
+    <record id="view_microbank_loan_application_graph" model="ir.ui.view">
+        <field name="name">microbank.loan.application.graph</field>
+        <field name="model">loan.application</field>
+        <field name="group_ids" eval="[
+            (4, ref('microbank.group_analyst')),
+            (4, ref('microbank.group_admin'))
+        ]"/>
+        <field name="arch" type="xml">
+            <graph string="Graficos de prestamos">
+                <field name="loan_amount" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_microbank_loan_application_pivot" model="ir.ui.view">
+        <field name="name">microbank.loan.application.pivot</field>
+        <field name="model">loan.application</field>
+        <field name="group_ids" eval="[
+            (4, ref('microbank.group_analyst')),
+            (4, ref('microbank.group_admin'))
+        ]"/>
+        <field name="arch" type="xml">
+            <pivot string="Tabla de prestamos">
+                <field name="state" type="row"/>
+                <field name="approval_date" type="col" interval="month"/>
+            </pivot>
+        </field>
+    </record>
+
 
     <record id="action_microbank_loan_application" model="ir.actions.act_window">
         <field name="name">Prestamos</field>
         <field name="res_model">loan.application</field>
-        <field name="view_mode">list,kanban,form,search</field>
+        <field name="view_mode">list,kanban,form,graph,pivot</field>
         <field name="view_ids" eval="[Command.clear(),
-                          (0,0,{'view_mode':'list', 'view_id': ref('view_microbank_loan_application_tree')}),
-                          (0,0,{'view_mode':'form', 'view_id': ref('view_microbank_loan_application_form')})]"/>
+          (0,0,{'view_mode':'list', 'view_id': ref('view_microbank_loan_application_tree')}),
+          (0,0,{'view_mode':'form', 'view_id': ref('view_microbank_loan_application_form')}),
+          (0,0,{'view_mode':'kanban', 'view_id': ref('view_microbank_loan_application_kanban')}),
+          (0,0,{'view_mode':'graph', 'view_id': ref('view_microbank_loan_application_graph')}),
+          (0,0,{'view_mode':'pivot', 'view_id': ref('view_microbank_loan_application_pivot')})
+        ]"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Crea una nueva solicitud de prestamo

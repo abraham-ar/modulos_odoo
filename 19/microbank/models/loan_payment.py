@@ -3,6 +3,7 @@ from odoo import models, fields
 class LoanPayment(models.Model):
     _name = 'loan.payment'
     _description = 'Pago de prestamo'
+    _rec_name = 'loan_id'
 
     loan_id = fields.Many2one(
         comodel_name='loan.application',
