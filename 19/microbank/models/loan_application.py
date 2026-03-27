@@ -1,5 +1,6 @@
 from datetime import timedelta
 from odoo import models, fields, api
+from odoo.exceptions import ValidationError
 from dateutil.relativedelta import relativedelta
 
 
@@ -66,10 +67,20 @@ class LoanApplication(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
-        # print('odoo ', vals_list)
+        LOAN_LIMIT = 100000
         for vals in vals_list:
+
+            #Validar monto del prestamo
+            loan_amount = vals.get('loan_amount', 0)
+            if loan_amount > LOAN_LIMIT:
+                raise ValidationError(
+                    f"El monto del préstamo no puede exceder {LOAN_LIMIT}"
+                )
+
+            #Generar secuencia
             if not vals.get('name') or vals['name'] == 'New':
                 vals['name'] = self.env['ir.sequence'].next_by_code('loan.application')
+
         return super().create(vals_list)
 
     def write(self, vals):
