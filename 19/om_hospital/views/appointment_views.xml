@@ -42,7 +42,6 @@
                             </group>
                         </page>
                     </notebook>
-
                 </sheet>
             </form>
         </field>
@@ -61,11 +60,31 @@
         </field>
     </record>
 
+    <record id="view_hospital_appointment_search" model="ir.ui.view">
+        <field name="name">hospital.appointment.search</field>
+        <field name="model">hospital.appointment</field>
+        <field name="arch" type="xml">
+            <search string="Appointments">
+                <field name="patient_id"/>
+                <field name="reference"/>
+                <field name="reference" string="Joined filter" filter_domain="[('reference', 'ilike', self), ('patient_id', 'ilike', self)]"/>
+
+                <group>
+                    <filter string="Patient" name="group_by_patient" context="{'group_by': 'patient_id'}"/>
+                </group>
+                <searchpanel>
+                    <field name="patient_id" string="Patient" enable_counters="1"/>
+                </searchpanel>
+            </search>
+        </field>
+    </record>
+
 
     <record id="action_hospital_appointment" model="ir.actions.act_window">
         <field name="name">Appointments</field>
         <field name="res_model">hospital.appointment</field>
         <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_hospital_appointment_search"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Create a new appointment

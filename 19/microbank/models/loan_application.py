@@ -1,22 +1,29 @@
 from datetime import timedelta
 from odoo import models, fields, api
+from odoo.exceptions import ValidationError
 from dateutil.relativedelta import relativedelta
 
-class LoanApplication(models.Model):
 
+class LoanApplication(models.Model):
     _name = 'loan.application'
     _description = 'Solicitud de prestamo'
+    _rec_name = 'name'
 
+    currency_id = fields.Many2one(
+        comodel_name='res.currency',
+        default=lambda self: self.env.company.currency_id
+    )
     name = fields.Char(
         string='Numero de solicitud',
         default="New"
-    ) #automatico
+    )  # automatico
     partner_id = fields.Many2one(
         comodel_name='res.partner',
         string="Cliente"
     )
-    loan_amount = fields.Float(
-        string='Monto del préstamo'
+    loan_amount = fields.Monetary(
+        string='Monto del préstamo',
+        currency_field="currency_id"
     )
     interest_rate = fields.Float(
         string='Tasa de interés anual'
@@ -26,20 +33,22 @@ class LoanApplication(models.Model):
     )
     state = fields.Selection(
         string='Estado del prestamo',
-        selection = [('borrador', 'Borrador'), ('aprobado', 'Aprobado'),
-                     ('rechazado', 'Rechazado'), ('pagado', 'Pagado')],
+        selection=[('borrador', 'Borrador'), ('aprobado', 'Aprobado'),
+                   ('rechazado', 'Rechazado'), ('pagado', 'Pagado')],
         default='borrador'
     )
-    monthly_payment = fields.Float(
+    monthly_payment = fields.Monetary(
         string='Pago mensual',
+        currency_field="currency_id",
         compute="_compute_monthly_payment",
         store=True
-    ) #calculado
-    total_to_pay = fields.Float(
+    )  # calculado
+    total_to_pay = fields.Monetary(
         string='Total a pagar',
+        currency_field="currency_id",
         compute="_compute_total_to_pay",
         store=True
-    ) #calcular
+    )  # calcular
     approval_date = fields.Date(
         string='Fecha de aprobacion'
     )
@@ -58,13 +67,53 @@ class LoanApplication(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
-        #print('odoo ', vals_list)
+        LOAN_LIMIT = 100000
         for vals in vals_list:
+
+            #Validar monto del prestamo
+            loan_amount = vals.get('loan_amount', 0)
+            if loan_amount > LOAN_LIMIT:
+                raise ValidationError(
+                    f"El monto del préstamo no puede exceder {LOAN_LIMIT}"
+                )
+
+            #Generar secuencia
             if not vals.get('name') or vals['name'] == 'New':
                 vals['name'] = self.env['ir.sequence'].next_by_code('loan.application')
+
         return super().create(vals_list)
 
-    @api.depends('loan_amount', 'term_months', 'interest_rate')
+    def write(self, vals):
+
+        old_states = {rec.id: rec.state for rec in self}
+
+        res = super().write(vals)
+
+        if 'state' in vals:
+
+            for rec in self:
+
+                old_state = old_states[rec.id]
+
+                if old_state != rec.state:
+
+                    if rec.state == 'aprobado':
+
+                        template = self.env.ref(
+                            'microbank.email_template_loan_approved'
+                        )
+                        template.send_mail(rec.id, force_send=True)
+
+                    elif rec.state == 'rechazado':
+
+                        template = self.env.ref(
+                            'microbank.email_template_loan_rejected'
+                        )
+                        template.send_mail(rec.id, force_send=True)
+
+        return res
+
+    @api.depends('loan_amount', 'term_months', 'interest_rate', 'currency_id')
     def _compute_monthly_payment(self):
         for rec in self:
             if not rec.term_months or not rec.loan_amount:
@@ -102,7 +151,13 @@ class LoanApplication(models.Model):
 
     def action_aprobar(self):
         for rec in self:
+            #cambiar el estado del prestamo
             rec.state = 'aprobado'
+
+            #generar el reporte PDF del contrato de prestamo
+            return self.env.ref(
+                'microbank.loan_application_contract_report'  # id externo de la accion
+            ).report_action(self)
 
     def action_pagar(self):
         for rec in self:

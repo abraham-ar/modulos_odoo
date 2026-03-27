@@ -5,30 +5,50 @@
             name="Microbank"
     />
 
-    <menuitem id="menu_prestamos"
+    <menuitem id="menu_prestamos_manager_analyst"
               name="Prestamos"
+              sequence="10"
               parent="menu_microbank_root"
-              action="action_microbank_loan_application"
-              groups="microbank.group_analyst,microbank.group_manager,microbank.group_cashier"
+              action="action_microbank_loan_application_analyst"
+              groups="microbank.group_analyst,microbank.group_admin"
     />
 
+    <menuitem id="menu_prestamos_manager"
+              name="Prestamos"
+              sequence="15"
+              parent="menu_microbank_root"
+              action="action_microbank_loan_application_manager"
+              groups="microbank.group_manager"
+    />
+
+    <menuitem id="menu_prestamos_cashier"
+              name="Prestamos"
+              sequence="16"
+              parent="menu_microbank_root"
+              action="action_microbank_loan_application_cashier"
+              groups="microbank.group_cashier"
+    />
 
     <menuitem id="menu_clientes"
               name="Clientes"
+              sequence="20"
               parent="menu_microbank_root"
               action="action_microbank_client"
+              groups="microbank.group_admin"
     />
 
     <menuitem id="menu_pagos"
               name="Pagos"
+              sequence="30"
               parent="menu_microbank_root"
               action="action_microbank_loan_payment"
-              groups="microbank.group_cashier"
+              groups="microbank.group_cashier,microbank.group_admin"
     />
 
     <menuitem id="menu_reportes"
               name="Reportes"
+              sequence="40"
               parent="menu_microbank_root"
-              groups="microbank.group_analyst"
+              groups="microbank.group_analyst,microbank.group_admin"
     />
 </odoo>
