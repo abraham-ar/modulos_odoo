@@ -7,3 +7,4 @@ access_loan_payment_analyst,access.loan.payment.analyst,model_loan_payment,micro
 access_loan_payment_manager,access.loan.payment.manager,model_loan_payment,microbank.group_manager,1,0,0,0
 access_loan_payment_cashier,access.loan.payment.cashier,model_loan_payment,microbank.group_cashier,1,1,1,0
 access_loan_payment_admin,access.loan.payment.admin,model_loan_payment,microbank.group_admin,1,1,1,1
+access_loan_application_wizard,access.loan.application.wizard,model_loan_application_change_state,microbank.group_manager,1,1,1,1

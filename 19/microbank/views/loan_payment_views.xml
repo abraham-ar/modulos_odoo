@@ -18,7 +18,7 @@
                 <sheet>
                     <group>
                         <group>
-                            <field name="loan_id"/>
+                            <field name="loan_id" readonly="state == 'confirmado'"/>
                             <field name="payment_date"/>
                         </group>
                         <group>
@@ -58,10 +58,37 @@
         </field>
     </record>
 
+    <record id="view_microbank_loan_payment_search" model="ir.ui.view">
+        <field name="name">microbank.loan.payment.search</field>
+        <field name="model">loan.payment</field>
+        <field name="arch" type="xml">
+            <search string="Pagos">
+                <field name="loan_id"/>
+                <field name="amount"/>
+                <filter string="Por confirmar" name="draft_loan_payment"
+                        domain="[('state', '=', 'borrador')]"/>
+                <filter string="Confirmados" name="approved_loan_payment"
+                        domain="[('state', '=', 'confirmado')]"/>
+                <filter string="Cancelados" name="canceled_loan_payment"
+                        domain="[('state', '=', 'cancelado')]"/>
+                <group>
+                    <filter string="Por prestamo" name="group_by_loan_id" context="{'group_by': 'loan_id'}"/>
+                </group>
+                <group>
+                    <filter string="Por estado del pago" name="group_by_state" context="{'group_by': 'state'}"/>
+                </group>
+                <group>
+                    <filter string="Por fecha de pago" name="group_by_payment_date" context="{'group_by': 'payment_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
     <record id="action_microbank_loan_payment" model="ir.actions.act_window">
         <field name="name">Pagos</field>
         <field name="res_model">loan.payment</field>
         <field name="view_mode">list,calendar,form</field>
+        <field name="search_view_id" ref="view_microbank_loan_payment_search"/>
         <field name="view_ids" eval="[Command.clear(),
                           (0,0,{'view_mode':'list', 'view_id': ref('view_microbank_loan_payment_tree')}),
                           (0,0,{'view_mode':'form', 'view_id': ref('view_microbank_loan_payment_form')})]"/>
